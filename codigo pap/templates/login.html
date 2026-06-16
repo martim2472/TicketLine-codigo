@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card">
+    <h2><i class="fa-solid fa-user"></i> Iniciar Sessão</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Acede à tua conta do Ticketline.</p>
+    
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+        </div>
+        <div class="form-group">
+            <label for="password">Palavra-passe</label>
+            <input type="password" id="password" name="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-submit">Entrar</button>
+    </form>
+    
+    <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+        Ainda não tens conta? <a href="{{ url_for('registo') }}" style="color: var(--primary-glow); text-decoration: none;">Regista-te aqui</a>
+    </p>
+</div>
+{% endblock %}

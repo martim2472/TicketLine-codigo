@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="glass-card" style="max-width: 600px;">
+    <h2><i class="fa-solid fa-user"></i> Painel do Cliente</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">Bem-vindo de volta! O que precisas de fazer hoje?</p>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        <a href="#" class="btn btn-outline" style="text-align: left; padding: 20px; color: white;">
+            <i class="fa-solid fa-plus-circle" style="color: var(--primary-glow); margin-right: 10px; font-size: 1.2rem;"></i> <strong>Criação de Tickets</strong> <br>
+            <small style="color: var(--text-muted);">Abre um novo pedido de ajuda.</small>
+        </a>
+        
+        <a href="#" class="btn btn-outline" style="text-align: left; padding: 20px; color: white;">
+            <i class="fa-solid fa-comments" style="color: var(--primary-glow); margin-right: 10px; font-size: 1.2rem;"></i> <strong>Chat</strong> <br>
+            <small style="color: var(--text-muted);">Fala diretamente com um agente.</small>
+        </a>
+        
+        <a href="#" class="btn btn-outline" style="text-align: left; padding: 20px; color: white;">
+            <i class="fa-solid fa-list" style="color: var(--primary-glow); margin-right: 10px; font-size: 1.2rem;"></i> <strong>Tipos de Serviço</strong> <br>
+            <small style="color: var(--text-muted);">Consulta os serviços que suportamos.</small>
+        </a>
+    </div>
+    
+    <div style="margin-top: 2rem;">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Terminar Sessão</a>
+    </div>
+</div>
+{% endblock %}

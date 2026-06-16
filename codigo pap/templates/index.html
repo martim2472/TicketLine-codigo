@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero">
+    <h1>Olá! Precisas de uma mãozinha?</h1>
+    <p>Bem-vindo ao Ticketline! Estamos aqui para te ajudar a resolver qualquer problema de forma rápida e com um sorriso. O teu suporte, sempre perto de ti.</p>
+    <div class="hero-actions">
+        <a href="{{ url_for('login') }}" class="btn btn-primary"><i class="fa-solid fa-right-to-bracket"></i> Entrar na Minha Conta</a>
+        <a href="{{ url_for('registo') }}" class="btn btn-outline"><i class="fa-solid fa-user-plus"></i> Registar-se</a>
+    </div>
+</div>
+
+<!-- Sobre a Empresa -->
+<section class="about-section">
+    <div class="about-text">
+        <h2><i class="fa-solid fa-building"></i> Sobre o Ticketline</h2>
+        <p>
+            O <strong>Ticketline</strong> é uma plataforma de suporte técnico moderna, criada para aproximar clientes
+            e agentes de uma forma humana, rápida e eficaz. Inspirado nas melhores práticas da
+            <strong>Teleperformance</strong>, o nosso sistema garante que nenhum pedido de ajuda fica sem resposta.
+        </p>
+        <p>
+            Trabalhamos com algumas das maiores empresas do mundo, prestando suporte dedicado às suas comunidades de utilizadores:
+        </p>
+        <div class="partners">
+            <span class="partner-badge"><i class="fa-brands fa-tiktok"></i> TikTok</span>
+            <span class="partner-badge"><i class="fa-brands fa-microsoft"></i> Microsoft</span>
+            <span class="partner-badge"><i class="fa-brands fa-reddit"></i> Reddit</span>
+            <span class="partner-badge"><i class="fa-solid fa-gamepad"></i> Supercell</span>
+        </div>
+        <p>
+            Com a nossa equipa de agentes qualificados e um sistema de tickets intuitivo, garantimos tempos de
+            resposta rápidos, acompanhamento personalizado e uma experiência de suporte que coloca as pessoas em primeiro lugar.
+        </p>
+        <a href="{{ url_for('registo') }}" class="btn btn-primary" style="margin-top: 1rem;">
+            <i class="fa-solid fa-user-plus"></i> Criar Conta Grátis
+        </a>
+    </div>
+    <div class="about-image">
+        <img src="{{ url_for('static', filename='img/helpdesk.png') }}" alt="Agente de suporte Ticketline sorridente com headset">
+    </div>
+</section>
+
+{% endblock %}
