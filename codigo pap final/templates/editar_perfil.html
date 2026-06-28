@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page">
+<div class="glass-card" style="max-width:520px;">
+    <h2><i class="fa-solid fa-pen" style="color:var(--primary-glow);"></i> Editar Perfil</h2>
+    <p style="color:var(--text-muted);margin-top:.3rem;margin-bottom:2rem;">Atualiza as tuas informações pessoais.</p>
+
+    <form method="POST" action="{{ url_for('editar_perfil') }}" enctype="multipart/form-data">
+
+        <!-- Pré-visualização avatar -->
+        <div class="avatar-preview-wrap">
+            {% if user.foto_perfil %}
+                <img src="{{ url_for('static', filename='uploads/'~user.foto_perfil) }}"
+                     class="avatar-preview" id="avatar-preview" alt="Foto atual">
+            {% else %}
+                <div class="avatar-preview-placeholder" id="avatar-placeholder">{{ user.nome[0]|upper }}</div>
+                <img src="" class="avatar-preview" id="avatar-preview" alt="" style="display:none;">
+            {% endif %}
+
+            <label class="file-upload-label" for="foto">
+                <i class="fa-solid fa-camera"></i> Alterar foto de perfil
+            </label>
+            <input type="file" id="foto" name="foto" accept="image/*">
+            <small style="color:var(--text-muted);font-size:.78rem;">PNG, JPG, GIF ou WEBP</small>
+        </div>
+
+        <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" required value="{{ user.nome }}">
+        </div>
+
+        {% if user.tipo == 'cliente' %}
+        <div class="form-group">
+            <label for="empresa">Empresa <span style="font-weight:400;color:var(--text-muted);">(opcional)</span></label>
+            <input type="text" id="empresa" name="empresa" value="{{ user.empresa or '' }}" placeholder="Nome da empresa">
+        </div>
+        {% else %}
+        <input type="hidden" name="empresa" value="{{ user.empresa or '' }}">
+        {% endif %}
+
+        <div style="margin-bottom:1.3rem;padding:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+            <p style="margin:0 0 4px;color:var(--text-muted);font-size:.85rem;font-weight:600;">
+                <i class="fa-solid fa-envelope"></i> Email
+            </p>
+            <p style="margin:0;color:var(--text);">{{ user.email }}</p>
+            <small style="color:var(--text-muted);font-size:.78rem;">O email não pode ser alterado.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Alterações
+        </button>
+    </form>
+
+    <p style="margin-top:1.5rem;font-size:.88rem;text-align:center;">
+        <a href="{{ url_for('ver_perfil', id=session.id) }}" style="color:var(--primary-glow);text-decoration:none;font-weight:600;">
+            <i class="fa-solid fa-arrow-left"></i> Voltar ao Perfil
+        </a>
+    </p>
+</div>
+</div>
+
+<script>
+document.getElementById('foto').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        const preview = document.getElementById('avatar-preview');
+        const placeholder = document.getElementById('avatar-placeholder');
+        preview.src = evt.target.result;
+        preview.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+});
+</script>
+{% endblock %}

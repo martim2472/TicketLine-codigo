@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+/* ─── Hero avançado ─── */
+.hero-wrap {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding: 6rem 2rem 5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.hero-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(255,117,140,.22), transparent),
+        radial-gradient(ellipse 60% 50% at 85% 80%,  rgba(166,75,244,.18), transparent),
+        radial-gradient(ellipse 40% 40% at 10% 90%,  rgba(0,242,120,.1),   transparent);
+    pointer-events: none;
+}
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,117,140,.12);
+    border: 1px solid rgba(255,117,140,.3);
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-size: .85rem;
+    color: var(--primary-glow);
+    font-weight: 700;
+    margin-bottom: 2rem;
+    animation: fadeDown .6s ease both;
+}
+.hero-title {
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.4rem;
+    background: linear-gradient(135deg, #fff 20%, var(--primary-glow) 60%, var(--purple-light) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: fadeDown .7s ease .1s both;
+}
+[data-theme="light"] .hero-title {
+    background: linear-gradient(135deg, #1a1030 10%, var(--primary) 55%, var(--purple) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    max-width: 580px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    animation: fadeDown .8s ease .2s both;
+}
+.hero-ctas {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeDown .9s ease .3s both;
+}
+
+/* ─── Floating cards ─── */
+.hero-cards {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 4rem;
+    width: 100%;
+    max-width: 900px;
+    animation: fadeUp 1s ease .5s both;
+}
+.hero-stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.3rem 1.6rem;
+    min-width: 150px;
+    text-align: center;
+    transition: transform .25s, border-color .25s;
+    backdrop-filter: blur(14px);
+}
+.hero-stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-glow);
+}
+.hero-stat-num {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-glow), var(--purple));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.hero-stat-lbl {
+    font-size: .78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+/* ─── Features ─── */
+.features-section {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+.features-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.features-header h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-glow), var(--purple));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: .8rem;
+}
+.features-header p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; }
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+}
+.feature-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 1.8rem;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    position: relative;
+    overflow: hidden;
+}
+.feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity .3s;
+    background: linear-gradient(135deg, rgba(255,117,140,.06), rgba(166,75,244,.06));
+}
+.feature-card:hover { transform: translateY(-5px); border-color: var(--border-hover); box-shadow: 0 12px 40px rgba(255,117,140,.1); }
+.feature-card:hover::before { opacity: 1; }
+.feature-card.purple:hover { border-color: var(--purple); box-shadow: 0 12px 40px rgba(166,75,244,.12); }
+.feature-card.purple::before { background: linear-gradient(135deg, rgba(166,75,244,.08), rgba(196,113,237,.05)); }
+.feature-card.green:hover { border-color: var(--green); box-shadow: 0 12px 40px rgba(0,242,120,.1); }
+.feature-card.green::before { background: linear-gradient(135deg, rgba(0,242,120,.07), rgba(0,192,96,.04)); }
+.feature-card.gold:hover { border-color: var(--gold); box-shadow: 0 12px 40px rgba(255,200,0,.1); }
+.feature-card.gold::before { background: linear-gradient(135deg, rgba(255,200,0,.07), rgba(255,154,0,.04)); }
+.feat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+.feat-icon.pink   { background: rgba(255,117,140,.15); color: var(--primary-glow); }
+.feat-icon.purple { background: rgba(166,75,244,.15);  color: var(--purple); }
+.feat-icon.green  { background: rgba(0,242,120,.15);   color: var(--green); }
+.feat-icon.gold   { background: rgba(255,200,0,.15);   color: var(--gold); }
+.feature-card h3 { font-size: 1.05rem; margin-bottom: .5rem; }
+.feature-card p  { color: var(--text-muted); font-size: .87rem; line-height: 1.7; }
+
+/* ─── About strip ─── */
+.about-strip {
+    width: 100%;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.about-strip-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+.about-strip h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-glow), var(--purple));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+.about-strip p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem; }
+.partners { display: flex; flex-wrap: wrap; gap: 8px; margin: 1rem 0; }
+.partner-badge {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: .85rem;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: border-color .2s;
+}
+.partner-badge:hover { border-color: var(--primary-glow); }
+.about-strip-img img {
+    width: 100%;
+    max-height: 360px;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+
+/* ─── CTA bottom ─── */
+.cta-section {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 5rem 2rem;
+    text-align: center;
+}
+.cta-section h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-glow), var(--purple-light));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+}
+.cta-section p { color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; }
+
+/* ─── Animações ─── */
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 768px) {
+    .about-strip-inner { grid-template-columns: 1fr; }
+    .about-strip-img { display: none; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══ HERO ══════════════════════════════════════════════════════════════════ -->
+<div class="hero-wrap">
+    <div class="hero-badge">
+        <i class="fa-solid fa-shield-halved"></i> Plataforma de Suporte Certificada
+    </div>
+
+    <h1 class="hero-title">O teu suporte<br>começa aqui.</h1>
+
+    <p class="hero-sub">
+        Bem-vindo ao <strong class="icon-primary">Ticketline</strong>!
+        A plataforma que une clientes e agentes de forma rápida, transparente e humana.
+        Resolve problemas, acompanha pedidos e melhora a experiência de suporte.
+    </p>
+
+    <div class="hero-ctas">
+        <a href="{{ url_for('login') }}" class="btn btn-primary" style="font-size:1rem;padding:13px 28px;">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar na Minha Conta
+        </a>
+        <a href="{{ url_for('registo') }}" class="btn btn-outline" style="font-size:1rem;padding:13px 28px;">
+            <i class="fa-solid fa-user-plus"></i> Criar Conta Grátis
+        </a>
+    </div>
+
+    <!-- Mini stats -->
+    <div class="hero-cards">
+        <div class="hero-stat-card">
+            <div class="hero-stat-num"><i class="fa-solid fa-bolt" style="font-size:1.4rem;"></i></div>
+            <div class="hero-stat-lbl">Resposta Rápida</div>
+        </div>
+        <div class="hero-stat-card">
+            <div class="hero-stat-num"><i class="fa-solid fa-shield-halved icon-purple" style="font-size:1.4rem;"></i></div>
+            <div class="hero-stat-lbl">100% Seguro</div>
+        </div>
+        <div class="hero-stat-card">
+            <div class="hero-stat-num"><i class="fa-solid fa-star icon-gold" style="font-size:1.4rem;"></i></div>
+            <div class="hero-stat-lbl">Avaliações Reais</div>
+        </div>
+        <div class="hero-stat-card">
+            <div class="hero-stat-num"><i class="fa-solid fa-headset icon-green" style="font-size:1.4rem;"></i></div>
+            <div class="hero-stat-lbl">Suporte Humano</div>
+        </div>
+    </div>
+</div>
+
+<!-- ══ FEATURES ═══════════════════════════════════════════════════════════════ -->
+<section class="features-section">
+    <div class="features-header">
+        <h2>Tudo o que precisas, num só lugar</h2>
+        <p>Do primeiro ticket à avaliação final — o Ticketline cobre todo o ciclo de suporte.</p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feat-icon pink"><i class="fa-solid fa-ticket"></i></div>
+            <h3>Tickets em Tempo Real</h3>
+            <p>Cria e acompanha os teus pedidos com atualizações ao vivo. Sabe sempre o estado do teu problema.</p>
+        </div>
+        <div class="feature-card purple">
+            <div class="feat-icon purple"><i class="fa-solid fa-headset"></i></div>
+            <h3>Agentes Especializados</h3>
+            <p>Equipa de helpdesk dedicada por categoria. O teu pedido vai sempre para o agente certo.</p>
+        </div>
+        <div class="feature-card green">
+            <div class="feat-icon green"><i class="fa-solid fa-star"></i></div>
+            <h3>Avaliações com Estrelas</h3>
+            <p>Após resolução, avalia o atendimento. A tua opinião melhora a qualidade do suporte para todos.</p>
+        </div>
+        <div class="feature-card gold">
+            <div class="feat-icon gold"><i class="fa-solid fa-chart-bar"></i></div>
+            <h3>Dashboard &amp; Estatísticas</h3>
+            <p>Visualiza métricas e gráficos detalhados. Acompanha o desempenho da plataforma em tempo real.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feat-icon pink"><i class="fa-solid fa-paperclip"></i></div>
+            <h3>Anexos nos Tickets</h3>
+            <p>Envia imagens, PDFs e ficheiros diretamente no ticket para facilitar a resolução do problema.</p>
+        </div>
+        <div class="feature-card purple">
+            <div class="feat-icon purple"><i class="fa-solid fa-moon"></i></div>
+            <h3>Modo Claro / Escuro</h3>
+            <p>Interface adaptada às tuas preferências. Alterna entre temas com um clique, a qualquer altura.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ══ SOBRE ══════════════════════════════════════════════════════════════════ -->
+<div class="about-strip">
+    <div class="about-strip-inner">
+        <div>
+            <h2><i class="fa-solid fa-building icon-primary" style="font-size:1.5rem;"></i> Sobre o Ticketline</h2>
+            <p>
+                O <strong>Ticketline</strong> é uma plataforma de suporte técnico moderna, criada para aproximar
+                clientes e agentes de uma forma humana, rápida e eficaz. Inspirado nas melhores práticas da
+                <strong>Teleperformance</strong>, o nosso sistema garante que nenhum pedido fica sem resposta.
+            </p>
+            <p>Trabalhamos com algumas das maiores empresas do mundo:</p>
+            <div class="partners">
+                <span class="partner-badge"><i class="fa-brands fa-tiktok"></i> TikTok</span>
+                <span class="partner-badge"><i class="fa-brands fa-microsoft"></i> Microsoft</span>
+                <span class="partner-badge"><i class="fa-brands fa-reddit"></i> Reddit</span>
+                <span class="partner-badge"><i class="fa-solid fa-gamepad"></i> Supercell</span>
+            </div>
+            <p>
+                Com agentes qualificados e um sistema de tickets intuitivo, garantimos tempos de resposta
+                rápidos, acompanhamento personalizado e uma experiência que coloca as pessoas em primeiro lugar.
+            </p>
+            <a href="{{ url_for('registo') }}" class="btn btn-primary" style="margin-top:.5rem;">
+                <i class="fa-solid fa-rocket"></i> Começar Agora
+            </a>
+        </div>
+        <div class="about-strip-img">
+            <img src="{{ url_for('static', filename='img/helpdesk.svg') }}" alt="Agente de suporte Ticketline">
+        </div>
+    </div>
+</div>
+
+<!-- ══ CTA FINAL ═══════════════════════════════════════════════════════════════ -->
+<section class="cta-section">
+    <h2>Pronto para começar?</h2>
+    <p>
+        Cria a tua conta gratuitamente em segundos e submete o teu primeiro pedido de suporte.
+        A nossa equipa está pronta para te ajudar!
+    </p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <a href="{{ url_for('registo') }}" class="btn btn-primary" style="font-size:1rem;padding:13px 28px;">
+            <i class="fa-solid fa-user-plus"></i> Criar Conta Grátis
+        </a>
+        <a href="{{ url_for('contacto') }}" class="btn btn-outline" style="font-size:1rem;padding:13px 28px;">
+            <i class="fa-solid fa-phone"></i> Contacta-nos
+        </a>
+    </div>
+</section>
+
+{% endblock %}

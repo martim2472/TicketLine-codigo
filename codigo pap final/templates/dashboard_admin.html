@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="admin-page">
+    <div class="admin-hero">
+        <h1><i class="fa-solid fa-crown icon-gold" style="font-size:1.6rem;"></i> Painel Administrador</h1>
+        <p>Visão geral completa da plataforma Ticketline.</p>
+    </div>
+
+    <!-- Stats gerais -->
+    <div class="stat-bar">
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-gold-h">{{ total_users }}</div>
+            <div class="stat-label">Total Utilizadores</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ total_clientes }}</div>
+            <div class="stat-label">Clientes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-purple">{{ total_agentes }}</div>
+            <div class="stat-label">Agentes</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">{{ total_tickets }}</div>
+            <div class="stat-label">Total Tickets</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-green-h">{{ este_mes_c }}</div>
+            <div class="stat-label">Criados Este Mês</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-gray-h">{{ este_mes_r }}</div>
+            <div class="stat-label">Resolvidos Este Mês</div>
+        </div>
+    </div>
+
+    {% if cat_top %}
+    <div style="margin-bottom:2rem;padding:1.2rem 1.5rem;background:linear-gradient(135deg,rgba(255,200,0,0.1),rgba(166,75,244,0.1));border:1px solid rgba(255,200,0,0.2);border-radius:14px;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <i class="fa-solid fa-trophy" style="font-size:1.8rem;color:#ffc800;"></i>
+        <div>
+            <div style="font-weight:700;font-size:1rem;">Categoria Mais Utilizada</div>
+            <div style="color:var(--text-muted);font-size:.9rem;">
+                <strong style="color:#ffc800;">{{ cat_top.categoria|title }}</strong> — {{ cat_top.n }} tickets
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Gráficos -->
+    <div class="charts-grid" data-chart='{{ chart_data | tojson }}'>
+        <div class="chart-card">
+            <h3><i class="fa-solid fa-chart-pie" style="color:var(--primary-glow);"></i> Tickets por Categoria</h3>
+            <canvas id="catChart" height="200"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3><i class="fa-solid fa-chart-bar" style="color:var(--purple);"></i> Tickets por Estado</h3>
+            <canvas id="estadoChart" height="200"></canvas>
+        </div>
+    </div>
+
+    <!-- Leaderboard de agentes -->
+    <div class="section-card" style="margin-bottom:2rem;">
+        <h2 style="color:var(--purple);">
+            <i class="fa-solid fa-headset"></i> Desempenho dos Agentes
+        </h2>
+        {% if agentes_stats %}
+            {% for a in agentes_stats %}
+            <div class="agent-row">
+                <a href="{{ url_for('ver_perfil', id=a.id) }}" style="display:flex;align-items:center;gap:.8rem;text-decoration:none;flex:1;min-width:0;">
+                    {% if a.foto_perfil %}
+                        <img src="{{ url_for('static', filename='uploads/'~a.foto_perfil) }}" class="agent-avatar-sm" alt="">
+                    {% else %}
+                        <div class="agent-avatar-sm-placeholder">{{ a.nome[0]|upper }}</div>
+                    {% endif %}
+                    <div>
+                        <strong style="color:var(--text);">{{ a.nome }}</strong>
+                        <div style="font-size:.8rem;color:var(--text-muted);">
+                            <span class="{{ 'online-label' if is_online(a.ultimo_acesso) else '' }}">
+                                <i class="fa-solid fa-circle" style="font-size:.45rem;vertical-align:middle;"></i>
+                                {{ 'Online' if is_online(a.ultimo_acesso) else tempo_desde(a.ultimo_acesso) }}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+                    <div style="text-align:center;">
+                        <div style="font-weight:700;color:var(--text);">{{ a.tickets_resolvidos }}</div>
+                        <div style="font-size:.72rem;color:var(--text-muted);">Resolvidos</div>
+                    </div>
+                    <div style="text-align:center;">
+                        {% if a.media_av %}
+                            <div style="font-weight:700;color:#ffc800;">{{ a.media_av }} ★</div>
+                        {% else %}
+                            <div style="color:var(--text-muted);">— ★</div>
+                        {% endif %}
+                        <div style="font-size:.72rem;color:var(--text-muted);">Média ({{ a.total_av }} av.)</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state" style="padding:1.5rem;">
+                <i class="fa-solid fa-users-slash"></i>
+                <p>Ainda não há agentes registados.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Mensagens de contacto -->
+    {% if ultimos_contactos %}
+    <div class="section-card" style="margin-bottom:2rem;">
+        <h2 style="color:var(--primary-glow);">
+            <i class="fa-solid fa-envelope"></i> Mensagens de Contacto
+        </h2>
+        {% for m in ultimos_contactos %}
+        <div class="ticket-row" style="cursor:default;flex-direction:column;align-items:flex-start;gap:6px;">
+            <strong>{{ m.assunto }}</strong>
+            <small><i class="fa-solid fa-user"></i> {{ m.nome }} &bull; {{ m.email }} &bull; {{ m.criado_em }}</small>
+            <p style="color:var(--text-muted);font-size:.88rem;margin:0;">{{ m.mensagem[:120] }}{% if m.mensagem|length > 120 %}...{% endif %}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Últimos tickets -->
+    <div class="section-card">
+        <h2>
+            <i class="fa-solid fa-clock-rotate-left" style="color:var(--primary-glow);"></i> Últimos 10 Tickets
+            <a href="{{ url_for('tickets_helpdesk') }}" style="font-size:.8rem;font-weight:400;color:var(--primary-glow);text-decoration:none;margin-left:auto;">Ver todos →</a>
+        </h2>
+        {% for t in ultimos_tickets %}
+        <a href="{{ url_for('ver_ticket', id=t.id) }}" class="ticket-row">
+            <div class="ticket-row-info">
+                <strong>#{{ t.id }} — {{ t.titulo }}</strong>
+                <small><i class="fa-solid fa-user"></i> {{ t.cliente_nome }} &bull; {{ t.categoria|title }}</small>
+            </div>
+            <span class="badge {% if t.estado=='aberto' %}badge-open{% elif t.estado=='em_analise' %}badge-analise{% else %}badge-closed{% endif %}">
+                {{ t.estado|replace('_',' ')|title }}
+            </span>
+        </a>
+        {% endfor %}
+    </div>
+
+    <div style="margin-top:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="{{ url_for('utilizadores') }}" class="btn btn-primary" style="background:linear-gradient(45deg,#ffc800,#ff9a00);box-shadow:0 4px 18px rgba(255,200,0,.3);">
+            <i class="fa-solid fa-users"></i> Gerir Utilizadores
+        </a>
+        <a href="{{ url_for('tickets_helpdesk') }}" class="btn btn-outline" style="border-color:var(--purple);color:var(--purple);">
+            <i class="fa-solid fa-ticket"></i> Ver Todos os Tickets
+        </a>
+    </div>
+</div>
+
+<script>
+const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+const textColor = isDark ? '#c9c5d8' : '#6b6080';
+const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+const chartData = JSON.parse(document.querySelector('[data-chart]').getAttribute('data-chart'));
+const palette = ['#ff758c','#a64bf4','#00f278','#ffc800','#3b82f6','#f472b6','#06b6d4'];
+
+new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: { labels: chartData.cat.labels, datasets: [{ data: chartData.cat.values, backgroundColor: palette, borderWidth: 0 }] },
+    options: { plugins: { legend: { labels: { color: textColor, font: { family:'Outfit' } } } }, cutout: '60%' }
+});
+
+const eColors = chartData.estado.labels.map(function(label) {
+    return label.includes('Aberto') ? '#00f278'
+        : (label.includes('Analise') || label.includes('Análise')) ? '#ffc800'
+        : '#888';
+});
+new Chart(document.getElementById('estadoChart'), {
+    type: 'bar',
+    data: { labels: chartData.estado.labels, datasets: [{ data: chartData.estado.values, backgroundColor: eColors, borderRadius: 8, borderSkipped: false }] },
+    options: {
+        plugins: { legend: { display: false } },
+        scales: {
+            x: { ticks: { color: textColor, font: { family:'Outfit' } }, grid: { color: gridColor } },
+            y: { ticks: { color: textColor, font: { family:'Outfit' } }, grid: { color: gridColor }, beginAtZero: true }
+        }
+    }
+});
+</script>
+{% endblock %}

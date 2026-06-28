@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mensagens-page">
+
+    <div class="page-header">
+        <h1 class="gradient-text grad-pink-purple">
+            <i class="fa-solid fa-envelope icon-primary"></i> Mensagens
+        </h1>
+        <a href="{{ url_for('nova_mensagem') }}" class="btn btn-purple">
+            <i class="fa-solid fa-pen-to-square"></i> Nova Mensagem
+        </a>
+    </div>
+
+    <!-- Caixa de entrada -->
+    <div class="section-card" style="margin-bottom:1.5rem;">
+        <h2 style="color:var(--primary-glow);">
+            <i class="fa-solid fa-inbox"></i> Recebidas
+            {% set nao_lidas = recebidas|selectattr('lida','equalto',0)|list|length %}
+            {% if nao_lidas > 0 %}
+            <span style="font-size:.8rem;background:var(--primary);color:#fff;padding:2px 9px;border-radius:20px;margin-left:6px;font-weight:700;">{{ nao_lidas }} novas</span>
+            {% endif %}
+        </h2>
+        {% if recebidas %}
+            {% for m in recebidas %}
+            <div class="msg-item {{ 'nao-lida' if not m.lida else '' }}">
+                {% if m.remetente_foto %}
+                    <img src="{{ url_for('static', filename='uploads/'~m.remetente_foto) }}" class="msg-avatar-sm" alt="">
+                {% else %}
+                    <div class="msg-avatar-sm-placeholder">{{ m.remetente_nome[0]|upper }}</div>
+                {% endif %}
+                <div class="msg-body" style="flex:1;min-width:0;">
+                    <strong>{{ m.remetente_nome }}</strong>
+                    {% if not m.lida %}<span class="msg-badge-new">Novo</span>{% endif %}
+                    <p class="msg-subject">{{ m.assunto }}</p>
+                    <p>{{ m.corpo[:120] }}{% if m.corpo|length > 120 %}...{% endif %}</p>
+                    <small><i class="fa-solid fa-clock"></i> {{ m.criado_em }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state" style="padding:1.5rem;">
+                <i class="fa-solid fa-inbox"></i>
+                <p>Sem mensagens recebidas.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Enviadas -->
+    <div class="section-card">
+        <h2 style="color:var(--purple);">
+            <i class="fa-solid fa-paper-plane"></i> Enviadas
+        </h2>
+        {% if enviadas %}
+            {% for m in enviadas %}
+            <div class="msg-item">
+                {% if m.destinatario_foto %}
+                    <img src="{{ url_for('static', filename='uploads/'~m.destinatario_foto) }}" class="msg-avatar-sm" alt="">
+                {% else %}
+                    <div class="msg-avatar-sm-placeholder" style="background:linear-gradient(135deg,var(--purple),var(--purple-light));">{{ m.destinatario_nome[0]|upper }}</div>
+                {% endif %}
+                <div class="msg-body" style="flex:1;min-width:0;">
+                    <strong>Para: {{ m.destinatario_nome }}</strong>
+                    <p style="color:var(--text);margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ m.assunto }}</p>
+                    <p>{{ m.corpo[:120] }}{% if m.corpo|length > 120 %}...{% endif %}</p>
+                    <small><i class="fa-solid fa-clock"></i> {{ m.criado_em }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state" style="padding:1.5rem;">
+                <i class="fa-solid fa-paper-plane"></i>
+                <p>Ainda não enviaste mensagens.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

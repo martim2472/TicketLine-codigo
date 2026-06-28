@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page">
+<div class="glass-card" style="max-width:520px;">
+    <h2 style="color:var(--primary-glow);">
+        <i class="fa-solid fa-star"></i> Avaliar Atendimento
+    </h2>
+    <p style="color:var(--text-muted);margin-top:0;margin-bottom:1.8rem;">
+        Ticket <strong>#{{ ticket.id }}</strong> — atendido por <strong>{{ agente.nome }}</strong>.<br>
+        A tua avaliação é importante para melhorarmos o serviço.
+    </p>
+
+    <form method="POST" action="{{ url_for('avaliar_ticket', id=ticket.id) }}">
+
+        <!-- Estrelas interativas -->
+        <div class="form-group" style="text-align:center;">
+            <label style="display:block;margin-bottom:1rem;">Classificação</label>
+            <div class="star-rating-input" style="justify-content:center;">
+                <input type="radio" id="s5" name="estrelas" value="5" required>
+                <label for="s5" title="5 estrelas"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="s4" name="estrelas" value="4">
+                <label for="s4" title="4 estrelas"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="s3" name="estrelas" value="3" checked>
+                <label for="s3" title="3 estrelas"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="s2" name="estrelas" value="2">
+                <label for="s2" title="2 estrelas"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="s1" name="estrelas" value="1">
+                <label for="s1" title="1 estrela"><i class="fa-solid fa-star"></i></label>
+            </div>
+            <small id="star-label" style="color:var(--text-muted);margin-top:.5rem;display:block;">3 estrelas — Satisfatório</small>
+        </div>
+
+        <div class="form-group">
+            <label for="comentario">Comentário <span style="font-weight:400;color:var(--text-muted);">(opcional)</span></label>
+            <textarea id="comentario" name="comentario"
+                      placeholder="Descreve a tua experiência..." style="min-height:90px;resize:vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Avaliação
+        </button>
+    </form>
+
+    <p style="margin-top:1.5rem;font-size:.88rem;">
+        <a href="{{ url_for('ver_ticket', id=ticket.id) }}" style="color:var(--text-muted);text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i> Voltar ao Ticket
+        </a>
+    </p>
+</div>
+</div>
+
+<script>
+const labels = ['','1 estrela — Mau','2 estrelas — Fraco','3 estrelas — Satisfatório','4 estrelas — Bom','5 estrelas — Excelente'];
+document.querySelectorAll('.star-rating-input input').forEach(r => {
+    r.addEventListener('change', () => {
+        document.getElementById('star-label').textContent = labels[r.value] || '';
+    });
+});
+</script>
+{% endblock %}

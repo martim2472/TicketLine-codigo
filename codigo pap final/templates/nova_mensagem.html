@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page">
+<div class="glass-card" style="max-width:520px;">
+
+    <h2><i class="fa-solid fa-pen-to-square" style="color:var(--purple);"></i> Nova Mensagem</h2>
+    <p style="color:var(--text-muted);margin-bottom:1.8rem;font-size:.92rem;">
+        Envia uma mensagem interna a um agente ou administrador.
+    </p>
+
+    <form method="POST" action="{{ url_for('nova_mensagem') }}">
+        <div class="form-group">
+            <label for="destinatario_id">Destinatário</label>
+            <select id="destinatario_id" name="destinatario_id" required>
+                <option value="" disabled selected>Escolhe um destinatário...</option>
+                {% for d in destinatarios %}
+                <option value="{{ d.id }}" {{ 'selected' if d.id == para_id else '' }}>
+                    {{ d.nome }} — {{ 'Administrador' if d.tipo=='admin' else 'Agente' }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="assunto">Assunto</label>
+            <input type="text" id="assunto" name="assunto"
+                   placeholder="Sobre o quê é esta mensagem?" required maxlength="120">
+        </div>
+
+        <div class="form-group">
+            <label for="corpo">Mensagem</label>
+            <textarea id="corpo" name="corpo" required
+                      placeholder="Escreve a tua mensagem..."
+                      style="min-height:130px;resize:vertical;"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-purple btn-submit">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Mensagem
+        </button>
+    </form>
+
+    <p style="margin-top:1.4rem;font-size:.88rem;text-align:center;">
+        <a href="{{ url_for('mensagens') }}" style="color:var(--text-muted);text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i> Voltar à Caixa de Entrada
+        </a>
+    </p>
+
+</div>
+</div>
+{% endblock %}

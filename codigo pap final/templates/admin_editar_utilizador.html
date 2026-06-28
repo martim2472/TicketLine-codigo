@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page">
+<div class="glass-card" style="max-width:500px;">
+
+    <h2><i class="fa-solid fa-user-pen" style="color:var(--gold);"></i> Editar Utilizador</h2>
+    <p style="color:var(--text-muted);font-size:.92rem;margin-bottom:1.8rem;">
+        A editar o perfil de <strong style="color:var(--text);">{{ user.nome }}</strong>
+        <span class="tipo-badge {{ user.tipo }}" style="margin-left:6px;vertical-align:middle;">{{ user.tipo|title }}</span>
+    </p>
+
+    <form method="POST" action="{{ url_for('admin_editar_utilizador', id=user.id) }}">
+        <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" required value="{{ user.nome }}">
+        </div>
+
+        <!-- Empresa só para clientes -->
+        {% if user.tipo == 'cliente' %}
+        <div class="form-group">
+            <label for="empresa">Empresa / Projeto</label>
+            <input type="text" id="empresa" name="empresa"
+                   value="{{ user.empresa or '' }}"
+                   placeholder="Nome da empresa ou projeto">
+        </div>
+        {% else %}
+        <input type="hidden" name="empresa" value="{{ user.empresa or '' }}">
+        <div style="padding:.9rem 1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:1.3rem;font-size:.88rem;color:var(--text-muted);">
+            <i class="fa-solid fa-circle-info"></i> Agentes e administradores não têm projeto/empresa.
+        </div>
+        {% endif %}
+
+        <div style="margin-bottom:1.3rem;padding:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;">
+            <p style="color:var(--text-muted);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;">Email (não editável)</p>
+            <p style="color:var(--text);">{{ user.email }}</p>
+        </div>
+
+        <button type="submit" class="btn btn-gold btn-submit">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar Alterações
+        </button>
+    </form>
+
+    <p style="margin-top:1.4rem;font-size:.88rem;text-align:center;">
+        <a href="{{ url_for('ver_perfil', id=user.id) }}" style="color:var(--text-muted);text-decoration:none;">
+            <i class="fa-solid fa-arrow-left"></i> Voltar ao Perfil
+        </a>
+    </p>
+
+</div>
+</div>
+{% endblock %}

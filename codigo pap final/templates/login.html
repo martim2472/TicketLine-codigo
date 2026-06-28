@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="form-page">
+<div class="glass-card">
+    <h2><i class="fa-solid fa-user"></i> Iniciar Sessão</h2>
+    <p style="color:var(--text-muted);margin-bottom:2rem;margin-top:0.3rem;">Acede à tua conta do Ticketline.</p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="exemplo@email.com">
+        </div>
+        <div class="form-group">
+            <label for="password">Palavra-passe</label>
+            <input type="password" id="password" name="password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn btn-primary btn-submit">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar
+        </button>
+    </form>
+
+    <div style="margin-top:1.4rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:0.88rem;color:var(--text-muted);">
+        <a href="{{ url_for('recuperar_password') }}"
+           style="color:var(--purple);text-decoration:none;font-weight:600;">
+            <i class="fa-solid fa-key"></i> Esqueci a password
+        </a>
+        <a href="{{ url_for('registo') }}"
+           style="color:var(--primary-glow);text-decoration:none;font-weight:600;">
+            Criar conta →
+        </a>
+    </div>
+</div>
+</div>
+{% endblock %}

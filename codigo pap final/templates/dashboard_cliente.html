@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="dashboard-page">
+    <div class="dash-hero">
+        <h1><i class="fa-solid fa-user icon-primary" style="font-size:1.8rem;"></i> Bem-vindo, {{ session.nome }}!</h1>
+        <p>Aqui podes gerir os teus pedidos e acompanhar o estado dos tickets.</p>
+    </div>
+
+    <div class="stat-bar">
+        <div class="stat-item">
+            <div class="stat-number">{{ total }}</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-green-h">{{ abertos }}</div>
+            <div class="stat-label">Abertos</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-gold-h">{{ analise }}</div>
+            <div class="stat-label">Em Análise</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-gray-h">{{ fechados }}</div>
+            <div class="stat-label">Resolvidos</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text grad-purple">{{ este_mes }}</div>
+            <div class="stat-label">Este Mês</div>
+        </div>
+    </div>
+
+    <!-- Gráfico + Ações rápidas -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-bottom:2rem;">
+        <div class="chart-card" data-chart='{{ chart_data | tojson }}'>
+            <h3><i class="fa-solid fa-chart-pie" style="color:var(--primary-glow);"></i> Tickets por Categoria</h3>
+            <canvas id="catChart" height="180"></canvas>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:1rem;">
+            <a href="{{ url_for('criar_ticket') }}" class="dash-card" style="flex:1;">
+                <div class="card-icon"><i class="fa-solid fa-plus-circle"></i></div>
+                <h3>Criar Ticket</h3>
+                <p>Abre um novo pedido de suporte.</p>
+            </a>
+            <a href="{{ url_for('contacto') }}" class="dash-card" style="flex:1;">
+                <div class="card-icon"><i class="fa-solid fa-phone"></i></div>
+                <h3>Contacto</h3>
+                <p>Fala diretamente connosco.</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Lista de tickets -->
+    <div class="section-card">
+        <h2><i class="fa-solid fa-ticket" style="color:var(--primary-glow);"></i> Os Meus Tickets</h2>
+        {% if tickets %}
+            {% for t in tickets %}
+            <a href="{{ url_for('ver_ticket', id=t.id) }}" class="ticket-row">
+                <div class="ticket-row-info">
+                    <strong>{{ t.titulo }}</strong>
+                    <small><i class="fa-solid fa-tag"></i> {{ t.categoria|title }} &bull; <i class="fa-solid fa-fire"></i> {{ t.prioridade|title }}</small>
+                </div>
+                <span class="badge {% if t.estado=='aberto' %}badge-open{% elif t.estado=='em_analise' %}badge-analise{% else %}badge-closed{% endif %}">
+                    {{ t.estado|replace('_',' ')|title }}
+                </span>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-inbox"></i>
+                <p>Ainda não tens tickets. <a href="{{ url_for('criar_ticket') }}" style="color:var(--primary-glow);">Cria o primeiro!</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+const chartData = JSON.parse(document.querySelector('[data-chart]').getAttribute('data-chart'));
+const colors = ['#ff758c','#a64bf4','#00f278','#ffc800','#3b82f6','#f472b6'];
+new Chart(document.getElementById('catChart'), {
+    type: 'doughnut',
+    data: { labels: chartData.labels, datasets: [{ data: chartData.values, backgroundColor: colors, borderWidth: 0 }] },
+    options: {
+        plugins: { legend: { labels: { color: isDark ? '#c9c5d8' : '#6b6080', font: { family: 'Outfit' } } } },
+        cutout: '65%'
+    }
+});
+</script>
+{% endblock %}

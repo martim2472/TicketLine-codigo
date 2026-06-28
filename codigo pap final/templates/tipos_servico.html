@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="services-section">
+    <div class="services-header">
+        <h1>Nossos Serviços</h1>
+        <p>Apoio técnico e atendimento de excelência desenhados para aproximar pessoas e resolver desafios com rapidez e profissionalismo.</p>
+    </div>
+
+    <div class="services-grid">
+        <!-- Atendimento ao Cliente -->
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+            <h3>Atendimento ao Cliente</h3>
+            <p>Apoio e orientação de excelência dedicados ao cliente para esclarecer dúvidas gerais, prestar assistência célere e garantir a melhor experiência possível com a nossa plataforma.</p>
+        </div>
+
+        <!-- Suporte Técnico Especializado -->
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fa-solid fa-laptop-code"></i>
+            </div>
+            <h3>Suporte Técnico Especializado</h3>
+            <p>Resolução avançada de problemas de software, bugs de sistema, integrações e configurações de rede complexas através de engenheiros e técnicos altamente qualificados.</p>
+        </div>
+
+        <!-- Gestão de Pedidos e Tickets -->
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fa-solid fa-ticket"></i>
+            </div>
+            <h3>Gestão de Pedidos e Tickets</h3>
+            <p>Organização inteligente, triagem automática, priorização de tarefas e monitorização de incidentes em tempo real para um fluxo de trabalho transparente e sem atritos.</p>
+        </div>
+
+        <!-- Serviço de Hardware -->
+        <div class="service-card">
+            <div class="service-icon">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+            <h3>Serviço de Hardware</h3>
+            <p>Abertura de pedidos para diagnóstico, manutenção corretiva de equipamentos físicos, substituição de peças, gestão de inventário e assistência técnica presencial.</p>
+        </div>
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;">
+        {% if session.tipo == 'cliente' %}
+        <a href="{{ url_for('criar_ticket') }}" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Criar Ticket de Suporte
+        </a>
+        {% elif not session.id %}
+        <a href="{{ url_for('registo') }}" class="btn btn-primary">
+            <i class="fa-solid fa-user-plus"></i> Criar Conta Grátis
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
